@@ -11,13 +11,13 @@ st.markdown("""
     <style>
     /* Main app background */
     .stApp {
-        background-color: black;
+        background-color: #f9f9f9;
         font-family: "Segoe UI", sans-serif;
     }
 
     /* Sidebar */
     section[data-testid="stSidebar"] {
-        background-color: black;
+        background-color: #ffffff;
         padding: 15px;
         border-right: 1px solid #ddd;
     }
