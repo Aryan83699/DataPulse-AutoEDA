@@ -1,5 +1,5 @@
 import random, datetime, psycopg2, smtplib
-# from turtle import pd
+from dotenv import load_dotenv
 from email.message import EmailMessage
 import requests
 from report_generator import generate_eda_report
@@ -9,15 +9,18 @@ from pycaret_service import run_automl_pipeline
 import os
 import pandas as pd
 
+
+load_dotenv()
+
 app = Flask(__name__)
-app.secret_key = 'Aryan@2005'
+app.secret_key = os.getenv("SECRET_KEY")
 
 DB_CONFIG = {
-    'dbname': 'datapulse',
-    'user': 'postgres',
-    'password': 'main',
-    'host': 'localhost',
-    'port': '5432'
+    'dbname': os.getenv("DB_NAME"),
+    'user': os.getenv("DB_USER"),
+    'password': os.getenv("DB_PASSWORD"),
+    'host': os.getenv("DB_HOST"),
+    'port': os.getenv("DB_PORT")
 }
 
 UPLOAD_FOLDER = "uploads"
@@ -25,7 +28,10 @@ ALLOWED_EXTENSIONS = {"csv", "xlsx", "json"}
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs("static/reports", exist_ok=True)
+os.makedirs("static/models", exist_ok=True)
 
+ # Load environment variables from .env file
 
 # ---------------- UTILS ----------------
 
@@ -71,11 +77,11 @@ def send_otp(receiver_email):
     msg = EmailMessage()
     msg.set_content(f"Your OTP code is: {otp}")
     msg['Subject'] = 'DataPulse OTP Verification'
-    msg['From'] = "aryansingha887@gmail.com"
+    msg['From'] = os.getenv("GMAIL_USER")
     msg['To'] = receiver_email
 
     with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-        smtp.login("aryansingha887@gmail.com", "mqzi zdod awjr ocxa")
+        smtp.login(os.getenv("GMAIL_USER"), os.getenv("GMAIL_APP_PASSWORD"))
         smtp.send_message(msg)
 
     return otp
