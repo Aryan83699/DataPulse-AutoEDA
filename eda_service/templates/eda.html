@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DataPulse Auto EDA - Detailed Report</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3c83f6",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#101722",
+                        "neutral-dark": "#1e293b",
+                        "accent-success": "#0bda5e",
+                        "accent-warning": "#fa6238",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-slate-200 dark:border-slate-800 bg-background-light dark:bg-background-dark px-6 md:px-10 py-3 sticky top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-primary">
+<div class="size-8 flex items-center justify-center bg-primary/10 rounded-lg">
+<span class="material-symbols-outlined text-primary">analytics</span>
+</div>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight">DataPulse</h2>
+</div>
+<nav class="hidden lg:flex items-center gap-6">
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors" href="#">Dashboard</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors" href="#">Datasets</a>
+<a class="text-primary text-sm font-semibold border-b-2 border-primary pb-1" href="#">Reports</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors" href="#">Settings</a>
+</nav>
+</div>
+<div class="flex flex-1 justify-end gap-4 items-center">
+<div class="hidden md:flex w-full max-w-xs items-center relative">
+<span class="material-symbols-outlined absolute left-3 text-slate-400 text-sm">search</span>
+<input class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/50 text-slate-900 dark:text-white placeholder:text-slate-500" placeholder="Search variables..."/>
+</div>
+<div class="flex gap-2">
+<button class="flex items-center justify-center rounded-xl size-10 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="size-10 rounded-full border-2 border-primary/20 p-0.5 overflow-hidden">
+<img alt="User Avatar" class="w-full h-full rounded-full object-cover" data-alt="User profile avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvIDTul9brUkW_TABV32C4Ej1QcXSvQHLC-E8PUw9AGT-DM5XkWDZ-DbZCA5tmHoqEzVkYIuqxjFbzFga30tZwF519TzKMom59VdYCD5ZkNZOnWR3G-Sh_PJu81UD85PZvTGZDCXcH1oit347AvurItFUkYIq8bHG3ccGvaDMwyuih3GLZjxXTPh7OtdAjqeud8HiWZoQ9XoGcaQ5l8OZbChFMokY_vFXyGSaQM0OvYmebX2kVTLqyG8HUaHKJ80t1WUPOY3uqe1fi"/>
+</div>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- AI Guide Sidebar -->
+<aside class="hidden xl:flex w-80 flex-col border-r border-slate-200 dark:border-slate-800 bg-background-light dark:bg-background-dark p-6 sticky top-[65px] h-[calc(100vh-65px)] overflow-y-auto">
+<div class="flex flex-col gap-6">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-sm">auto_awesome</span>
+<h3 class="text-slate-900 dark:text-white font-bold text-base">AI Guide</h3>
+</div>
+<p class="text-slate-500 text-xs font-medium">Analyzing: sales_data_2024_Q1.csv</p>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-primary/10 text-primary font-semibold" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-sm">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors font-medium" href="#">
+<span class="material-symbols-outlined">list_alt</span>
+<span class="text-sm">Variables</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors font-medium" href="#">
+<span class="material-symbols-outlined">swap_horiz</span>
+<span class="text-sm">Interactions</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors font-medium" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="text-sm">Correlations</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors font-medium" href="#">
+<span class="material-symbols-outlined">error</span>
+<span class="text-sm">Missing Values</span>
+</a>
+</nav>
+<div class="mt-4 p-4 rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800">
+<h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Insights Summary</h4>
+<ul class="flex flex-col gap-3">
+<li class="flex gap-3 text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-primary text-base shrink-0">info</span>
+<span>Strong positive correlation (0.89) detected between <span class="text-primary">Marketing_Spend</span> and <span class="text-primary">Revenue</span>.</span>
+</li>
+<li class="flex gap-3 text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-accent-warning text-base shrink-0">warning</span>
+<span>Variable <span class="font-bold">Customer_Age</span> contains 4.2% missing values, mostly in the West region.</span>
+</li>
+<li class="flex gap-3 text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-accent-success text-base shrink-0">check_circle</span>
+<span>Skewness in <span class="font-bold">Unit_Price</span> has improved since last update.</span>
+</li>
+</ul>
+</div>
+<div class="mt-auto pt-6 flex flex-col gap-3">
+<button class="w-full py-3 px-4 bg-primary hover:bg-primary/90 text-white rounded-xl text-sm font-bold shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">chat_bubble</span>
+                        Ask AI Assistant
+                    </button>
+<button class="w-full py-3 px-4 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl text-sm font-bold border border-slate-200 dark:border-slate-700 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">download</span>
+                        Export PDF Report
+                    </button>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col p-6 md:p-10 gap-8 overflow-y-auto bg-slate-50 dark:bg-background-dark/50">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div class="flex flex-col gap-2">
+<h1 class="text-slate-900 dark:text-white text-4xl font-black tracking-tight leading-tight">Detailed EDA Report</h1>
+<p class="text-slate-500 text-base">Deep-dive profiling via <span class="font-semibold text-slate-700 dark:text-slate-300">ydata-profiling</span> &amp; <span class="font-semibold text-slate-700 dark:text-slate-300">skimpy</span> engines.</p>
+</div>
+<button class="flex items-center justify-center gap-2 px-6 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-700 dark:text-white shadow-sm hover:shadow-md transition-all">
+<span class="material-symbols-outlined text-sm">refresh</span>
+                    Refresh Analysis
+                </button>
+</div>
+<!-- High Level Metrics Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="bg-white dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex items-center justify-between mb-2">
+<p class="text-slate-500 text-sm font-medium">Total Rows</p>
+<span class="material-symbols-outlined text-slate-400 text-lg">reorder</span>
+</div>
+<p class="text-slate-900 dark:text-white text-3xl font-bold leading-tight">15,240</p>
+<p class="text-accent-success text-sm font-semibold mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">arrow_upward</span> +2.4%
+                    </p>
+</div>
+<div class="bg-white dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex items-center justify-between mb-2">
+<p class="text-slate-500 text-sm font-medium">Variables</p>
+<span class="material-symbols-outlined text-slate-400 text-lg">data_object</span>
+</div>
+<p class="text-slate-900 dark:text-white text-3xl font-bold leading-tight">24</p>
+<p class="text-slate-500 text-sm font-medium mt-1">14 Numeric, 10 Cat</p>
+</div>
+<div class="bg-white dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex items-center justify-between mb-2">
+<p class="text-slate-500 text-sm font-medium">Missing Cells</p>
+<span class="material-symbols-outlined text-slate-400 text-lg">blur_on</span>
+</div>
+<p class="text-slate-900 dark:text-white text-3xl font-bold leading-tight">1.2%</p>
+<p class="text-accent-success text-sm font-semibold mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">arrow_downward</span> -0.1%
+                    </p>
+</div>
+<div class="bg-white dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex items-center justify-between mb-2">
+<p class="text-slate-500 text-sm font-medium">Duplicate Rows</p>
+<span class="material-symbols-outlined text-slate-400 text-lg">content_copy</span>
+</div>
+<p class="text-slate-900 dark:text-white text-3xl font-bold leading-tight">0.5%</p>
+<p class="text-accent-warning text-sm font-semibold mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">priority_high</span> Warning
+                    </p>
+</div>
+</div>
+<!-- Main Analysis Content -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Variable Distribution -->
+<div class="lg:col-span-8 flex flex-col gap-6">
+<div class="bg-white dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-slate-900 dark:text-white text-xl font-bold">Sales Distribution Overview</h2>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold text-slate-600 dark:text-slate-400">Histogram</span>
+<span class="px-3 py-1 bg-primary/10 text-primary rounded-lg text-xs font-bold">KDE Plot</span>
+</div>
+</div>
+<div class="h-64 w-full flex items-end justify-between gap-1 px-2 mb-4">
+<!-- Mock Histogram Bars -->
+<div class="bg-primary/20 hover:bg-primary transition-all w-full rounded-t-sm h-[20%]"></div>
+<div class="bg-primary/20 hover:bg-primary transition-all w-full rounded-t-sm h-[35%]"></div>
+<div class="bg-primary/20 hover:bg-primary transition-all w-full rounded-t-sm h-[45%]"></div>
+<div class="bg-primary/20 hover:bg-primary transition-all w-full rounded-t-sm h-[65%]"></div>
+<div class="bg-primary/40 hover:bg-primary transition-all w-full rounded-t-sm h-[85%]"></div>
+<div class="bg-primary hover:bg-primary/80 transition-all w-full rounded-t-sm h-[100%]"></div>
+<div class="bg-primary hover:bg-primary/80 transition-all w-full rounded-t-sm h-[90%]"></div>
+<div class="bg-primary hover:bg-primary/80 transition-all w-full rounded-t-sm h-[75%]"></div>
+<div class="bg-primary/60 hover:bg-primary transition-all w-full rounded-t-sm h-[55%]"></div>
+<div class="bg-primary/40 hover:bg-primary transition-all w-full rounded-t-sm h-[35%]"></div>
+<div class="bg-primary/30 hover:bg-primary transition-all w-full rounded-t-sm h-[25%]"></div>
+<div class="bg-primary/20 hover:bg-primary transition-all w-full rounded-t-sm h-[15%]"></div>
+<div class="bg-primary/10 hover:bg-primary transition-all w-full rounded-t-sm h-[10%]"></div>
+<div class="bg-primary/10 hover:bg-primary transition-all w-full rounded-t-sm h-[5%]"></div>
+</div>
+<div class="flex justify-between text-[10px] text-slate-400 font-medium px-2">
+<span>$0</span>
+<span>$15k</span>
+<span>$30k</span>
+<span>$45k</span>
+<span>$60k</span>
+<span>$75k</span>
+<span>$90k+</span>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-slate-900 dark:text-white text-xl font-bold">Category Breakdown</h2>
+<span class="material-symbols-outlined text-slate-400 cursor-pointer">more_horiz</span>
+</div>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between text-sm mb-2">
+<span class="text-slate-700 dark:text-slate-300 font-medium">Electronics</span>
+<span class="text-slate-900 dark:text-white font-bold">4,120 (27%)</span>
+</div>
+<div class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full w-[27%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-sm mb-2">
+<span class="text-slate-700 dark:text-slate-300 font-medium">Home &amp; Kitchen</span>
+<span class="text-slate-900 dark:text-white font-bold">3,350 (22%)</span>
+</div>
+<div class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+<div class="h-full bg-primary/70 rounded-full w-[22%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-sm mb-2">
+<span class="text-slate-700 dark:text-slate-300 font-medium">Fashion</span>
+<span class="text-slate-900 dark:text-white font-bold">2,740 (18%)</span>
+</div>
+<div class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+<div class="h-full bg-primary/50 rounded-full w-[18%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Correlations & Stats -->
+<div class="lg:col-span-4 flex flex-col gap-6">
+<div class="bg-white dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex-1">
+<h2 class="text-slate-900 dark:text-white text-xl font-bold mb-6">Spearman Correlation</h2>
+<div class="aspect-square w-full grid grid-cols-5 grid-rows-5 gap-1">
+<!-- Heatmap mockup -->
+<div class="bg-primary rounded-sm opacity-100" title="1.00"></div>
+<div class="bg-primary rounded-sm opacity-80" title="0.82"></div>
+<div class="bg-primary rounded-sm opacity-60" title="0.61"></div>
+<div class="bg-primary rounded-sm opacity-20" title="0.21"></div>
+<div class="bg-primary rounded-sm opacity-10" title="0.05"></div>
+<div class="bg-primary rounded-sm opacity-80" title="0.82"></div>
+<div class="bg-primary rounded-sm opacity-100" title="1.00"></div>
+<div class="bg-primary rounded-sm opacity-40" title="0.44"></div>
+<div class="bg-primary rounded-sm opacity-30" title="0.32"></div>
+<div class="bg-primary rounded-sm opacity-10" title="0.08"></div>
+<div class="bg-primary rounded-sm opacity-60" title="0.61"></div>
+<div class="bg-primary rounded-sm opacity-40" title="0.44"></div>
+<div class="bg-primary rounded-sm opacity-100" title="1.00"></div>
+<div class="bg-primary rounded-sm opacity-50" title="0.51"></div>
+<div class="bg-primary rounded-sm opacity-20" title="0.19"></div>
+<div class="bg-primary rounded-sm opacity-20" title="0.21"></div>
+<div class="bg-primary rounded-sm opacity-30" title="0.32"></div>
+<div class="bg-primary rounded-sm opacity-50" title="0.51"></div>
+<div class="bg-primary rounded-sm opacity-100" title="1.00"></div>
+<div class="bg-primary rounded-sm opacity-40" title="0.42"></div>
+<div class="bg-primary rounded-sm opacity-10" title="0.05"></div>
+<div class="bg-primary rounded-sm opacity-10" title="0.08"></div>
+<div class="bg-primary rounded-sm opacity-20" title="0.19"></div>
+<div class="bg-primary rounded-sm opacity-40" title="0.42"></div>
+<div class="bg-primary rounded-sm opacity-100" title="1.00"></div>
+</div>
+<div class="mt-4 flex flex-col gap-2">
+<div class="flex items-center gap-2 text-xs text-slate-500">
+<div class="size-2 rounded-full bg-primary opacity-100"></div>
+<span>High Positive Correlation</span>
+</div>
+<div class="flex items-center gap-2 text-xs text-slate-500">
+<div class="size-2 rounded-full bg-primary opacity-20"></div>
+<span>Low/No Correlation</span>
+</div>
+</div>
+</div>
+<div class="bg-primary p-6 rounded-2xl shadow-lg shadow-primary/30 text-white flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-sm">tips_and_updates</span>
+<h3 class="font-bold">Pro Tip</h3>
+</div>
+<p class="text-sm opacity-90 leading-relaxed">Consider a <span class="font-bold">Log Transformation</span> on the 'Sales' column to normalize the heavy right-skewed distribution before modeling.</p>
+</div>
+<button class="mt-4 text-xs font-black uppercase tracking-widest bg-white/20 hover:bg-white/30 py-2 px-4 rounded-lg transition-colors w-fit">
+                            Apply Suggestion
+                        </button>
+</div>
+</div>
+</div>
+<!-- Detailed Table Section (skimpy output style) -->
+<div class="bg-white dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+<div class="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+<h2 class="text-slate-900 dark:text-white text-xl font-bold">Data Dictionary &amp; Skimpy Summary</h2>
+<div class="flex gap-2">
+<button class="size-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 text-slate-500"><span class="material-symbols-outlined text-sm">filter_list</span></button>
+<button class="size-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 text-slate-500"><span class="material-symbols-outlined text-sm">settings</span></button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 text-xs font-bold uppercase tracking-wider">
+<th class="px-6 py-4">Column Name</th>
+<th class="px-6 py-4">Type</th>
+<th class="px-6 py-4">Missing</th>
+<th class="px-6 py-4">Unique</th>
+<th class="px-6 py-4">Mean/Freq</th>
+<th class="px-6 py-4">Std/Status</th>
+<th class="px-6 py-4">Small Chart</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+<tr class="text-sm text-slate-700 dark:text-slate-300">
+<td class="px-6 py-4 font-semibold">order_id</td>
+<td class="px-6 py-4"><span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px]">INT64</span></td>
+<td class="px-6 py-4">0%</td>
+<td class="px-6 py-4">15,240</td>
+<td class="px-6 py-4">N/A</td>
+<td class="px-6 py-4 text-accent-success">Primary Key</td>
+<td class="px-6 py-4">
+<div class="flex gap-0.5 items-end h-4 w-12">
+<div class="bg-slate-300 dark:bg-slate-600 w-full h-[80%]"></div>
+<div class="bg-slate-300 dark:bg-slate-600 w-full h-[80%]"></div>
+<div class="bg-slate-300 dark:bg-slate-600 w-full h-[80%]"></div>
+<div class="bg-slate-300 dark:bg-slate-600 w-full h-[80%]"></div>
+</div>
+</td>
+</tr>
+<tr class="text-sm text-slate-700 dark:text-slate-300">
+<td class="px-6 py-4 font-semibold">unit_price</td>
+<td class="px-6 py-4"><span class="px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 text-[10px]">FLOAT64</span></td>
+<td class="px-6 py-4">0.2%</td>
+<td class="px-6 py-4">421</td>
+<td class="px-6 py-4">$124.50</td>
+<td class="px-6 py-4">$45.12</td>
+<td class="px-6 py-4">
+<div class="flex gap-0.5 items-end h-4 w-12">
+<div class="bg-primary/60 w-full h-[20%]"></div>
+<div class="bg-primary/60 w-full h-[100%]"></div>
+<div class="bg-primary/60 w-full h-[40%]"></div>
+<div class="bg-primary/60 w-full h-[10%]"></div>
+</div>
+</td>
+</tr>
+<tr class="text-sm text-slate-700 dark:text-slate-300">
+<td class="px-6 py-4 font-semibold">customer_region</td>
+<td class="px-6 py-4"><span class="px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 text-[10px]">STRING</span></td>
+<td class="px-6 py-4 text-accent-warning font-bold">4.2%</td>
+<td class="px-6 py-4">5</td>
+<td class="px-6 py-4">West (42%)</td>
+<td class="px-6 py-4">Categorical</td>
+<td class="px-6 py-4">
+<div class="flex gap-0.5 items-end h-4 w-12">
+<div class="bg-amber-400 w-full h-[40%]"></div>
+<div class="bg-amber-400 w-full h-[100%]"></div>
+<div class="bg-amber-400 w-full h-[20%]"></div>
+<div class="bg-amber-400 w-full h-[60%]"></div>
+</div>
+</td>
+</tr>
+<tr class="text-sm text-slate-700 dark:text-slate-300">
+<td class="px-6 py-4 font-semibold">purchase_date</td>
+<td class="px-6 py-4"><span class="px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 text-[10px]">DATETIME</span></td>
+<td class="px-6 py-4">0%</td>
+<td class="px-6 py-4">12,110</td>
+<td class="px-6 py-4">2024-02-15</td>
+<td class="px-6 py-4">TimeSeries</td>
+<td class="px-6 py-4">
+<div class="flex gap-0.5 items-end h-4 w-12">
+<div class="bg-purple-400 w-full h-[60%]"></div>
+<div class="bg-purple-400 w-full h-[80%]"></div>
+<div class="bg-purple-400 w-full h-[90%]"></div>
+<div class="bg-purple-400 w-full h-[100%]"></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

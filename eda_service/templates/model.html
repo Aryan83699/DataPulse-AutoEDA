@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ML Training &amp; Model Comparison | DataPulse</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3c83f6",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#101722",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark px-6 py-3 sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<div class="text-primary">
+<svg class="size-8" fill="currentColor" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M8.57829 8.57829C5.52816 11.6284 3.451 15.5145 2.60947 19.7452C1.76794 23.9758 2.19984 28.361 3.85056 32.3462C5.50128 36.3314 8.29667 39.7376 11.8832 42.134C15.4698 44.5305 19.6865 45.8096 24 45.8096C28.3135 45.8096 32.5302 44.5305 36.1168 42.134C39.7033 39.7375 42.4987 36.3314 44.1494 32.3462C45.8002 28.361 46.2321 23.9758 45.3905 19.7452C44.549 15.5145 42.4718 11.6284 39.4217 8.57829L24 24L8.57829 8.57829Z"></path>
+</svg>
+</div>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold tracking-tight">DataPulse Auto EDA</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors text-sm font-medium" href="#">Models</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors text-sm font-medium" href="#">Datasets</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors text-sm font-medium" href="#">Reports</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors text-sm font-medium" href="#">Settings</a>
+</nav>
+<div class="h-10 w-10 rounded-full bg-slate-200 dark:bg-slate-800 border-2 border-primary/20 bg-cover bg-center" data-alt="User profile avatar circle" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBeuL4gIpJt3bNPInaEuesd6ipJ0j-PEDQ0KKZ0S8-awrb-9N9yo8fhjhLmvqhjjWYo6-cDduvFSNCeLivCGMaPUIQxVzNxbIxgKmpTAyC9giLHc81OSppnAOkWCLqImRfXoJU55S9oFQ8uF0Y5lfILh2tzdjbFk5uijPq3wW7wJ-eu4nMayR9REvOLxJFyjIZxHb7q5h2vBd6bDLHRg_gP9ny3ZhbNsDRer4JWpu-gX-ZOB1LREd68sUI07EGbUh7Pn6c_Sw0D1-HZ')"></div>
+</div>
+</header>
+<div class="flex h-[calc(100vh-65px)] overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="w-64 flex flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark p-4 shrink-0">
+<div class="flex flex-col gap-1 mb-8">
+<h1 class="text-slate-900 dark:text-white text-base font-bold">Project Alpha</h1>
+<p class="text-slate-500 text-xs">Customer Churn Prediction</p>
+</div>
+<nav class="flex flex-col gap-2 flex-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary text-white shadow-lg shadow-primary/20" href="#">
+<span class="material-symbols-outlined text-xl">model_training</span>
+<span class="text-sm font-medium">Model Training</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">compare_arrows</span>
+<span class="text-sm font-medium">Comparison</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">tune</span>
+<span class="text-sm font-medium">Fine-tuning</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">rocket_launch</span>
+<span class="text-sm font-medium">Deployment</span>
+</a>
+</nav>
+<button class="mt-auto flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white rounded-xl h-11 px-4 font-bold transition-all">
+<span class="material-symbols-outlined">add</span>
+<span class="text-sm">New Experiment</span>
+</button>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto custom-scrollbar p-8 bg-slate-50 dark:bg-slate-900/50">
+<div class="max-w-6xl mx-auto space-y-8">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div class="space-y-1">
+<h2 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Model Training &amp; Comparison</h2>
+<p class="text-slate-500 dark:text-slate-400">Identify patterns, select target variables, and compare algorithmic performance.</p>
+</div>
+<button class="flex items-center gap-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-2.5 rounded-xl font-bold shadow-xl transition-transform hover:scale-105">
+<span class="material-symbols-outlined">download</span>
+<span>Download Best Model</span>
+</button>
+</div>
+<!-- Configuration Section -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700/50 flex flex-col md:flex-row items-center gap-8">
+<div class="w-full md:w-1/2 space-y-4">
+<label class="block">
+<span class="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Select Target Variable</span>
+<select class="mt-1.5 block w-full rounded-xl border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-primary focus:border-primary py-3 px-4">
+<option>churn_status</option>
+<option>customer_value</option>
+<option>retention_risk</option>
+<option>monthly_usage</option>
+</select>
+</label>
+</div>
+<div class="flex flex-col items-center md:items-start gap-2">
+<span class="text-xs font-bold uppercase tracking-wider text-slate-500">Problem Type Identified</span>
+<div class="flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 text-primary rounded-full font-bold">
+<span class="material-symbols-outlined text-lg">category</span>
+<span>Binary Classification</span>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700/50">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-bold text-slate-900 dark:text-white">Hyperparameter Tuning</h3>
+<span class="material-symbols-outlined text-slate-400">settings_input_component</span>
+</div>
+<div class="space-y-6">
+<div class="space-y-2">
+<div class="flex justify-between text-xs font-medium">
+<span class="text-slate-500">Learning Rate</span>
+<span class="text-primary font-bold">0.001</span>
+</div>
+<input class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary" type="range"/>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-xs font-medium">
+<span class="text-slate-500">Max Depth</span>
+<span class="text-primary font-bold">8</span>
+</div>
+<input class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary" type="range"/>
+</div>
+<button class="w-full py-2 bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 text-sm font-bold rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                                Apply Parameters
+                            </button>
+</div>
+</div>
+</div>
+<!-- Comparison Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Graph 1: Accuracy -->
+<div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700/50">
+<div class="flex items-center justify-between mb-6">
+<h4 class="font-bold text-sm text-slate-700 dark:text-slate-300">Accuracy Comparison</h4>
+<span class="text-xs text-primary bg-primary/10 px-2 py-0.5 rounded font-bold">Live</span>
+</div>
+<div class="h-48 w-full flex items-end gap-2 pb-2">
+<div class="flex-1 bg-slate-100 dark:bg-slate-900 rounded-t-lg relative group transition-all" style="height: 85%">
+<div class="absolute inset-x-0 bottom-0 bg-primary/60 group-hover:bg-primary transition-all rounded-t-lg" style="height: 100%"></div>
+<span class="absolute -top-6 inset-x-0 text-center text-[10px] font-bold text-slate-400">XGB</span>
+</div>
+<div class="flex-1 bg-slate-100 dark:bg-slate-900 rounded-t-lg relative group transition-all" style="height: 72%">
+<div class="absolute inset-x-0 bottom-0 bg-primary/60 group-hover:bg-primary transition-all rounded-t-lg" style="height: 100%"></div>
+<span class="absolute -top-6 inset-x-0 text-center text-[10px] font-bold text-slate-400">RF</span>
+</div>
+<div class="flex-1 bg-slate-100 dark:bg-slate-900 rounded-t-lg relative group transition-all" style="height: 94%">
+<div class="absolute inset-x-0 bottom-0 bg-primary/80 group-hover:bg-primary transition-all rounded-t-lg border-t-2 border-white" style="height: 100%"></div>
+<span class="absolute -top-6 inset-x-0 text-center text-[10px] font-bold text-primary">DNN</span>
+</div>
+<div class="flex-1 bg-slate-100 dark:bg-slate-900 rounded-t-lg relative group transition-all" style="height: 60%">
+<div class="absolute inset-x-0 bottom-0 bg-primary/60 group-hover:bg-primary transition-all rounded-t-lg" style="height: 100%"></div>
+<span class="absolute -top-6 inset-x-0 text-center text-[10px] font-bold text-slate-400">SVC</span>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center">
+<span class="text-xs text-slate-500">Top Performer:</span>
+<span class="text-sm font-black text-slate-900 dark:text-white">94.2%</span>
+</div>
+</div>
+<!-- Graph 2: F1-Score -->
+<div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700/50">
+<div class="flex items-center justify-between mb-6">
+<h4 class="font-bold text-sm text-slate-700 dark:text-slate-300">F1-Score Metrics</h4>
+<span class="material-symbols-outlined text-slate-400 text-lg">query_stats</span>
+</div>
+<div class="h-48 w-full flex items-center justify-center bg-slate-50 dark:bg-slate-900/50 rounded-xl overflow-hidden">
+<!-- Visual placeholder for a line chart -->
+<div class="relative w-full h-full p-4 overflow-hidden">
+<svg class="w-full h-full text-primary" viewbox="0 0 100 40">
+<path d="M0 35 Q 20 10, 40 25 T 80 5 T 100 15" fill="none" stroke="currentColor" stroke-width="2" vector-effect="non-scaling-stroke"></path>
+<path d="M0 40 L 0 35 Q 20 10, 40 25 T 80 5 T 100 15 L 100 40 Z" fill="currentColor" fill-opacity="0.1"></path>
+</svg>
+<div class="absolute bottom-4 left-4 flex gap-4 text-[9px] uppercase tracking-tighter text-slate-400 font-bold">
+<span>Epoch 10</span>
+<span>Epoch 50</span>
+<span>Epoch 100</span>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center">
+<span class="text-xs text-slate-500">Balance Factor:</span>
+<span class="text-sm font-black text-slate-900 dark:text-white">0.88</span>
+</div>
+</div>
+<!-- Graph 3: Precision/Recall -->
+<div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700/50">
+<div class="flex items-center justify-between mb-6">
+<h4 class="font-bold text-sm text-slate-700 dark:text-slate-300">Model Robustness</h4>
+<span class="material-symbols-outlined text-slate-400 text-lg">radar</span>
+</div>
+<div class="h-48 w-full flex items-center justify-center">
+<div class="relative w-32 h-32 rounded-full border-4 border-primary/20 flex items-center justify-center">
+<div class="w-24 h-24 rounded-full border-4 border-primary/40 flex items-center justify-center">
+<div class="w-16 h-16 rounded-full bg-primary/20 animate-pulse border-2 border-primary/60"></div>
+</div>
+<div class="absolute -top-2 left-1/2 -translate-x-1/2 text-[10px] font-bold text-slate-400">Stability</div>
+<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 text-[10px] font-bold text-slate-400">Drift</div>
+<div class="absolute top-1/2 -left-4 -translate-y-1/2 text-[10px] font-bold text-slate-400">Bias</div>
+<div class="absolute top-1/2 -right-6 -translate-y-1/2 text-[10px] font-bold text-slate-400">Latency</div>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center">
+<span class="text-xs text-slate-500">Health Index:</span>
+<span class="text-sm font-black text-primary">Excellent</span>
+</div>
+</div>
+</div>
+<!-- Recent Models Table -->
+<div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700/50 overflow-hidden">
+<div class="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+<h3 class="font-bold text-slate-900 dark:text-white">Training Logs</h3>
+<button class="text-primary text-sm font-bold hover:underline">View All Experiments</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-slate-50 dark:bg-slate-900/50 text-[10px] uppercase font-bold text-slate-500">
+<tr>
+<th class="px-6 py-4">Model ID</th>
+<th class="px-6 py-4">Algorithm</th>
+<th class="px-6 py-4">Status</th>
+<th class="px-6 py-4">Accuracy</th>
+<th class="px-6 py-4">Duration</th>
+<th class="px-6 py-4 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="text-sm divide-y divide-slate-100 dark:divide-slate-700">
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
+<td class="px-6 py-4 font-medium text-slate-400">#EXP-4402</td>
+<td class="px-6 py-4 font-bold">Deep Neural Network</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-emerald-500 font-bold">
+<span class="size-2 bg-emerald-500 rounded-full"></span>
+                                            Complete
+                                        </span>
+</td>
+<td class="px-6 py-4 font-black">94.21%</td>
+<td class="px-6 py-4 text-slate-500">2m 45s</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary"><span class="material-symbols-outlined">visibility</span></button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
+<td class="px-6 py-4 font-medium text-slate-400">#EXP-4401</td>
+<td class="px-6 py-4 font-bold">Random Forest</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-emerald-500 font-bold">
+<span class="size-2 bg-emerald-500 rounded-full"></span>
+                                            Complete
+                                        </span>
+</td>
+<td class="px-6 py-4 font-black">88.15%</td>
+<td class="px-6 py-4 text-slate-500">1m 12s</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary"><span class="material-symbols-outlined">visibility</span></button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
+<td class="px-6 py-4 font-medium text-slate-400">#EXP-4398</td>
+<td class="px-6 py-4 font-bold">XGBoost Optimized</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-amber-500 font-bold">
+<span class="size-2 bg-amber-500 rounded-full animate-pulse"></span>
+                                            Training...
+                                        </span>
+</td>
+<td class="px-6 py-4 font-black text-slate-400">--</td>
+<td class="px-6 py-4 text-slate-500">Running</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary"><span class="material-symbols-outlined">pause_circle</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+<!-- Persistent AI Chatbot Panel -->
+<aside class="w-80 border-l border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark flex flex-col shrink-0">
+<div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="size-8 rounded-lg bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-lg">smart_toy</span>
+</div>
+<span class="font-bold text-slate-900 dark:text-white">Pulse AI</span>
+</div>
+<button class="text-slate-400 hover:text-slate-600"><span class="material-symbols-outlined">close</span></button>
+</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-4">
+<div class="flex flex-col gap-1">
+<div class="bg-slate-100 dark:bg-slate-800 p-3 rounded-2xl rounded-tl-none text-sm text-slate-700 dark:text-slate-300">
+                        I've analyzed your current training results. The <strong>Deep Neural Network</strong> is showing strong accuracy, but may be overfitting slightly given the validation curve.
+                    </div>
+<span class="text-[10px] text-slate-400 ml-1">2m ago</span>
+</div>
+<div class="flex flex-col gap-1 items-end">
+<div class="bg-primary p-3 rounded-2xl rounded-tr-none text-sm text-white">
+                        Should I try increasing the dropout rate for the DNN model?
+                    </div>
+<span class="text-[10px] text-slate-400 mr-1">1m ago</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="bg-slate-100 dark:bg-slate-800 p-3 rounded-2xl rounded-tl-none text-sm text-slate-700 dark:text-slate-300">
+                        Yes, that's a great idea. Increasing dropout to 0.3 could improve generalization. Would you like me to start a new experiment with that setting?
+                    </div>
+<div class="flex gap-2 mt-2">
+<button class="px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-full text-xs font-bold text-primary">Start Tuning</button>
+<button class="px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-full text-xs font-bold text-slate-500">Dismiss</button>
+</div>
+</div>
+</div>
+<div class="p-4 border-t border-slate-200 dark:border-slate-800">
+<div class="relative">
+<input class="w-full bg-slate-50 dark:bg-slate-900 border-none rounded-xl py-3 px-4 pr-12 text-sm focus:ring-2 focus:ring-primary/50 text-slate-900 dark:text-slate-100" placeholder="Ask Pulse AI anything..." type="text"/>
+<button class="absolute right-2 top-1/2 -translate-y-1/2 size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-sm">send</span>
+</button>
+</div>
+</div>
+</aside>
+</div>
+</body></html>

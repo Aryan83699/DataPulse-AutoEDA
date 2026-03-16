@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>DataPulse - Auth</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#3c83f6",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#101722",
+                    },
+                    fontFamily: { display: ["Inter", "sans-serif"] }
+                }
+            }
+        }
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+<style>
+body { font-family: 'Inter', sans-serif; }
+.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+@keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeSlideUp 0.6s ease forwards; }
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50%       { transform: translateY(-10px) rotate(2deg); }
+}
+.float-card { animation: float 6s ease-in-out infinite; }
+
+@keyframes pulse-ring {
+    0%   { box-shadow: 0 0 0 0 rgba(60,131,246,0.4); }
+    70%  { box-shadow: 0 0 0 16px rgba(60,131,246,0); }
+    100% { box-shadow: 0 0 0 0 rgba(60,131,246,0); }
+}
+.pulse-logo { animation: pulse-ring 3s infinite; }
+
+@keyframes toast-in {
+    from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes toast-out {
+    from { opacity: 1; transform: translateY(0) scale(1); }
+    to   { opacity: 0; transform: translateY(-20px) scale(0.95); }
+}
+.toast-show { animation: toast-in 0.3s ease forwards; }
+.toast-hide { animation: toast-out 0.3s ease forwards; }
+
+/* Grid dot background */
+.dot-bg {
+    background-image: radial-gradient(circle, rgba(60,131,246,0.15) 1px, transparent 1px);
+    background-size: 28px 28px;
+}
+
+/* Glowing orbs */
+.orb-1 {
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(60,131,246,0.2), transparent 70%);
+    top: -100px; left: -100px;
+    animation: orb-move 8s ease-in-out infinite alternate;
+}
+.orb-2 {
+    position: absolute;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(139,92,246,0.15), transparent 70%);
+    bottom: -50px; right: -50px;
+    animation: orb-move 10s ease-in-out infinite alternate-reverse;
+}
+@keyframes orb-move {
+    from { transform: translate(0, 0); }
+    to   { transform: translate(30px, 30px); }
+}
+
+/* Stat cards on left panel */
+.stat-card {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 16px 20px;
+    transition: transform 0.3s ease;
+}
+.stat-card:hover { transform: translateY(-3px); }
+
+/* Input focus glow */
+input:focus {
+    box-shadow: 0 0 0 3px rgba(60,131,246,0.2) !important;
+}
+
+/* Submit button shimmer */
+@keyframes shimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position: 200% center; }
+}
+.btn-shimmer {
+    background: linear-gradient(90deg, #3c83f6 0%, #60a5fa 40%, #3c83f6 60%, #2563eb 100%);
+    background-size: 200% auto;
+    animation: shimmer 3s linear infinite;
+}
+</style>
+</head>
+
+<body class="bg-background-dark text-white min-h-screen font-display">
+
+<!-- Toast notification -->
+<div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 hidden">
+    <div id="toastInner" class="flex items-center gap-3 px-5 py-3 rounded-2xl shadow-2xl border text-sm font-semibold">
+        <span id="toastIcon" class="material-symbols-outlined text-lg"></span>
+        <span id="toastMsg"></span>
+    </div>
+</div>
+
+<div class="flex flex-col lg:flex-row min-h-screen w-full">
+
+    <!-- ================= LEFT PANEL ================= -->
+    <div class="hidden lg:flex lg:w-1/2 relative flex-col justify-center items-center p-12 bg-slate-900 overflow-hidden dot-bg">
+
+        <!-- Orbs -->
+        <div class="orb-1"></div>
+        <div class="orb-2"></div>
+
+        <!-- Content -->
+        <div class="z-10 text-center max-w-lg fade-up">
+
+            <!-- Logo -->
+            <div class="flex items-center justify-center gap-4 mb-10">
+                <div class="bg-primary p-4 rounded-2xl shadow-2xl shadow-primary/30 pulse-logo">
+                    <span class="material-symbols-outlined text-white" style="font-size:40px;">analytics</span>
+                </div>
+                <div class="text-left">
+                    <h1 class="text-5xl font-black tracking-tight text-white leading-none">DataPulse</h1>
+                    <p class="text-primary text-sm uppercase tracking-[0.3em] font-semibold mt-1">Auto EDA Platform</p>
+                </div>
+            </div>
+
+            <p class="text-slate-300 text-lg leading-relaxed mb-10">
+                Unlock deep insights from your datasets instantly. Automated analysis with AI-powered storytelling.
+            </p>
+
+            <!-- Stat cards -->
+            <div class="grid grid-cols-3 gap-3 mb-10">
+                <div class="stat-card float-card text-center">
+                    <p class="text-2xl font-black text-primary">EDA</p>
+                    <p class="text-xs text-slate-400 mt-1">Auto Report</p>
+                </div>
+                <div class="stat-card text-center" style="animation: float 7s ease-in-out infinite;">
+                    <p class="text-2xl font-black text-purple-400">AI</p>
+                    <p class="text-xs text-slate-400 mt-1">Data Story</p>
+                </div>
+                <div class="stat-card text-center" style="animation: float 5s ease-in-out infinite;">
+                    <p class="text-2xl font-black text-green-400">ML</p>
+                    <p class="text-xs text-slate-400 mt-1">AutoML</p>
+                </div>
+            </div>
+
+            <!-- Feature pills -->
+            <div class="flex flex-wrap justify-center gap-2">
+                <span class="px-3 py-1.5 bg-primary/10 border border-primary/20 rounded-full text-xs text-primary font-semibold">📊 Instant Profiling</span>
+                <span class="px-3 py-1.5 bg-purple-500/10 border border-purple-500/20 rounded-full text-xs text-purple-400 font-semibold">✨ AI Narrative</span>
+                <span class="px-3 py-1.5 bg-green-500/10 border border-green-500/20 rounded-full text-xs text-green-400 font-semibold">🤖 Model Training</span>
+                <span class="px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-full text-xs text-amber-400 font-semibold">📈 3D Charts</span>
+                <span class="px-3 py-1.5 bg-red-500/10 border border-red-500/20 rounded-full text-xs text-red-400 font-semibold">💬 AI Chatbot</span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ================= RIGHT PANEL ================= -->
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-16 bg-background-dark relative overflow-hidden">
+
+        <!-- subtle bg pattern -->
+        <div class="absolute inset-0 dot-bg opacity-30"></div>
+
+        <div class="w-full max-w-md space-y-7 relative z-10 fade-up">
+
+            <!-- Mobile logo -->
+            <div class="flex lg:hidden items-center gap-3 mb-4">
+                <div class="bg-primary p-2 rounded-xl">
+                    <span class="material-symbols-outlined text-white">analytics</span>
+                </div>
+                <h1 class="text-2xl font-black">DataPulse</h1>
+            </div>
+
+            <!-- Flash messages (error only, success replaced by toast) -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  {% if category == 'error' %}
+                  <div class="p-3 rounded-xl text-sm font-medium flex items-center gap-2
+                      bg-red-500/10 text-red-400 border border-red-500/20">
+                      <span class="material-symbols-outlined text-base">error</span>
+                      {{ message }}
+                  </div>
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <!-- Header text -->
+            <div>
+                <h2 id="formTitle" class="text-3xl font-extrabold mb-1">Welcome Back 👋</h2>
+                <p id="formSub" class="text-slate-400 text-sm">Sign in to access your dashboard</p>
+            </div>
+
+            <!-- Toggle tabs -->
+            <div class="flex bg-slate-800 p-1 rounded-2xl">
+                <button type="button" id="loginToggle"
+                    class="flex-1 py-2.5 rounded-xl bg-primary text-white font-bold shadow-sm transition-all text-sm">
+                    <span class="flex items-center justify-center gap-1.5">
+                        <span class="material-symbols-outlined" style="font-size:16px;">login</span>
+                        Login
+                    </span>
+                </button>
+                <button type="button" id="signupToggle"
+                    class="flex-1 py-2.5 rounded-xl text-slate-400 font-bold hover:text-white transition-all text-sm">
+                    <span class="flex items-center justify-center gap-1.5">
+                        <span class="material-symbols-outlined" style="font-size:16px;">person_add</span>
+                        Sign Up
+                    </span>
+                </button>
+            </div>
+
+            <!-- Form -->
+            <form action="/auth" method="POST" class="space-y-5" id="authForm">
+                <input type="hidden" name="mode" id="modeInput" value="login">
+
+                <div id="dynamicField" class="space-y-1.5">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Username</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" style="font-size:18px;">person</span>
+                        <input type="text" name="username" placeholder="Enter your username"
+                            class="w-full p-3.5 pl-12 rounded-xl bg-slate-800 border border-slate-700 focus:border-primary outline-none transition-all text-sm placeholder-slate-500" required>
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Password</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" style="font-size:18px;">lock</span>
+                        <input type="password" name="password" id="passwordInput" placeholder="Enter your password"
+                            class="w-full p-3.5 pl-12 pr-12 rounded-xl bg-slate-800 border border-slate-700 focus:border-primary outline-none transition-all text-sm placeholder-slate-500" required>
+                        <button type="button" onclick="togglePassword()"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-all">
+                            <span class="material-symbols-outlined" id="eyeIcon" style="font-size:18px;">visibility</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="text-right">
+                    <a href="/forgot-password" class="text-xs text-primary hover:underline font-semibold">
+                        Forgot password?
+                     </a>
+                </div>
+
+                <button type="submit" id="submitBtn"
+                    class="w-full btn-shimmer text-white py-4 rounded-xl font-bold shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined" style="font-size:18px;">login</span>
+                    Sign In
+                </button>
+
+            </form>
+
+            <!-- Divider -->
+            <div class="flex items-center gap-3">
+                <div class="flex-1 h-px bg-slate-700"></div>
+                <p class="text-xs text-slate-500 font-medium">POWERED BY</p>
+                <div class="flex-1 h-px bg-slate-700"></div>
+            </div>
+
+            <!-- Tech badges -->
+            <div class="flex justify-center gap-3">
+                <span class="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-full text-xs text-slate-400 font-medium">Flask</span>
+                <span class="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-full text-xs text-slate-400 font-medium">LangChain</span>
+                <span class="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-full text-xs text-slate-400 font-medium">PyCaret</span>
+                <span class="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-full text-xs text-slate-400 font-medium">Groq</span>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<footer class="bg-slate-100 dark:bg-slate-900 border-t border-slate-300 dark:border-slate-700 py-6">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-sm">
+
+        <p class="text-slate-600 dark:text-slate-400 mb-4 md:mb-0">
+            © 2026 DataPulse Auto EDA. All rights reserved.
+        </p>
+
+        <div class="flex items-center gap-6">
+            <a href="https://www.linkedin.com/feed/" target="_blank"
+               class="text-slate-600 dark:text-slate-400 hover:text-primary transition">
+                LinkedIn
+            </a>
+
+            <a href="https://github.com/Aryan83699" target="_blank"
+               class="text-slate-600 dark:text-slate-400 hover:text-primary transition">
+                GitHub
+            </a>
+
+            <a href="https://www.kaggle.com/datawitharyan" target="_blank"
+               class="text-slate-600 dark:text-slate-400 hover:text-primary transition">
+                Kaggle
+            </a>
+        </div>
+    </div>
+</footer>
+<script>
+/* ================= TOGGLE PASSWORD ================= */
+function togglePassword() {
+    const input = document.getElementById("passwordInput");
+    const icon  = document.getElementById("eyeIcon");
+    if (input.type === "password") {
+        input.type = "text";
+        icon.textContent = "visibility_off";
+    } else {
+        input.type = "password";
+        icon.textContent = "visibility";
+    }
+}
+
+/* ================= TOAST ================= */
+function showToast(msg, type = "success") {
+    const toast      = document.getElementById("toast");
+    const toastInner = document.getElementById("toastInner");
+    const toastIcon  = document.getElementById("toastIcon");
+    const toastMsg   = document.getElementById("toastMsg");
+
+    toastMsg.textContent = msg;
+
+    if (type === "success") {
+        toastInner.className = "flex items-center gap-3 px-5 py-3 rounded-2xl shadow-2xl border text-sm font-semibold bg-green-900/80 border-green-500/30 text-green-300";
+        toastIcon.textContent = "check_circle";
+        toastIcon.className = "material-symbols-outlined text-lg text-green-400";
+    } else {
+        toastInner.className = "flex items-center gap-3 px-5 py-3 rounded-2xl shadow-2xl border text-sm font-semibold bg-red-900/80 border-red-500/30 text-red-300";
+        toastIcon.textContent = "error";
+        toastIcon.className = "material-symbols-outlined text-lg text-red-400";
+    }
+
+    toast.classList.remove("hidden");
+    toast.classList.add("toast-show");
+    toast.classList.remove("toast-hide");
+
+    setTimeout(() => {
+        toast.classList.add("toast-hide");
+        setTimeout(() => {
+            toast.classList.add("hidden");
+            toast.classList.remove("toast-show", "toast-hide");
+        }, 300);
+    }, 2500);
+}
+
+/* ================= FLASH → TOAST ================= */
+// Convert any success flash messages to toasts
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      {% if category == 'success' %}
+      window.addEventListener("DOMContentLoaded", () => {
+          showToast("{{ message }}", "success");
+      });
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+/* ================= FORM TOGGLE ================= */
+const loginToggle  = document.getElementById("loginToggle");
+const signupToggle = document.getElementById("signupToggle");
+const dynamicField = document.getElementById("dynamicField");
+const submitBtn    = document.getElementById("submitBtn");
+const modeInput    = document.getElementById("modeInput");
+const formTitle    = document.getElementById("formTitle");
+const formSub      = document.getElementById("formSub");
+
+function setActive(active, inactive) {
+    active.classList.add("bg-primary", "text-white", "shadow-sm");
+    active.classList.remove("text-slate-400");
+    inactive.classList.remove("bg-primary", "text-white", "shadow-sm");
+    inactive.classList.add("text-slate-400");
+}
+
+loginToggle.addEventListener("click", () => {
+    setActive(loginToggle, signupToggle);
+    modeInput.value = "login";
+    formTitle.innerText = "Welcome Back 👋";
+    formSub.innerText = "Sign in to access your dashboard";
+
+    dynamicField.innerHTML = `
+        <label class="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Username</label>
+        <div class="relative">
+            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" style="font-size:18px;">person</span>
+            <input type="text" name="username" placeholder="Enter your username"
+                class="w-full p-3.5 pl-12 rounded-xl bg-slate-800 border border-slate-700 focus:border-primary outline-none transition-all text-sm placeholder-slate-500" required>
+        </div>`;
+
+    submitBtn.innerHTML = `<span class="material-symbols-outlined" style="font-size:18px;">login</span> Sign In`;
+});
+
+signupToggle.addEventListener("click", () => {
+    setActive(signupToggle, loginToggle);
+    modeInput.value = "signup";
+    formTitle.innerText = "Create Account ✨";
+    formSub.innerText = "Join DataPulse today — it's free";
+
+    dynamicField.innerHTML = `
+        <label class="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Email</label>
+        <div class="relative">
+            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" style="font-size:18px;">mail</span>
+            <input type="email" name="email" placeholder="Enter your email"
+                class="w-full p-3.5 pl-12 rounded-xl bg-slate-800 border border-slate-700 focus:border-primary outline-none transition-all text-sm placeholder-slate-500" required>
+        </div>`;
+
+    submitBtn.innerHTML = `<span class="material-symbols-outlined" style="font-size:18px;">person_add</span> Create Account`;
+});
+
+/* ================= AUTO DISMISS ERROR FLASHES ================= */
+setTimeout(() => {
+    document.querySelectorAll('.p-3.rounded-xl').forEach(el => {
+        el.style.transition = "opacity 0.5s";
+        el.style.opacity = "0";
+        setTimeout(() => el.remove(), 500);
+    });
+}, 3000);
+</script>
+
+</body>
+</html>

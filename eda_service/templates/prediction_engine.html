@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DataPulse - Prediction Engine</title>
+
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+tailwind.config = {
+    darkMode: "class",
+    theme: {
+        extend: {
+            colors: {
+                primary: "#3c83f6",
+                "background-light": "#f5f7f8",
+                "background-dark": "#101722",
+            },
+            fontFamily: { display: ["Inter","sans-serif"] }
+        }
+    }
+}
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+<style>
+body { font-family: 'Inter', sans-serif; }
+.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+@keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up   { animation: fadeSlideUp 0.4s ease forwards; }
+.fade-up-2 { animation: fadeSlideUp 0.4s ease 0.1s forwards; opacity: 0; }
+.fade-up-3 { animation: fadeSlideUp 0.4s ease 0.2s forwards; opacity: 0; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+th, td {
+    padding: 12px 16px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+th {
+    background: #0f172a;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    color: #94a3b8;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+tr:hover { background: rgba(255,255,255,0.02); }
+td:first-child { font-weight: 600; text-align: left; }
+
+.section-card { animation: fadeSlideUp 0.4s ease forwards; }
+
+#mainContent {
+    transition: margin 0.3s ease;
+}
+
+
+</style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen font-display flex flex-col">
+
+<!-- ================= NAVBAR ================= -->
+<div class="border-b border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 sticky top-0 z-30">
+    <div class="w-full px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-8">
+            <div class="flex items-center gap-3">
+                <div class="bg-primary p-2 rounded-lg shadow shadow-primary/30">
+                    <span class="material-symbols-outlined text-white">analytics</span>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold">DataPulse</h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Prediction Engine</p>
+                </div>
+            </div>
+            <div class="hidden md:flex items-center gap-2 text-xs font-medium">
+                <a href="/upload" class="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white transition-all">Upload</a>
+                <a href="/report-dashboard" class="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white transition-all">Report</a>
+                <a href="/prediction_engine" class="px-3 py-1.5 rounded-full bg-primary text-white transition-all">Predict</a>
+            </div>
+        </div>
+        <a href="/" class="px-3 py-1.5 rounded-full bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all text-xs font-semibold flex items-center gap-1">
+            <span class="material-symbols-outlined" style="font-size:14px;">logout</span>
+            Logout
+        </a>
+    </div>
+</div>
+
+<!-- ================= MAIN ================= -->
+<div id="mainContent" class="w-full px-6 py-8 space-y-10 mx-auto" style="max-width:75%;">
+
+    <!-- Page title -->
+    <div class="fade-up">
+        <p class="text-xs font-bold text-primary uppercase tracking-widest mb-2">AutoML</p>
+        <h2 class="text-3xl font-black tracking-tight">Prediction Engine</h2>
+        <p class="text-slate-500 dark:text-slate-400 mt-2">Configure parameters and train multiple models automatically.</p>
+    </div>
+
+    <!-- ================= CONFIGURE SECTION ================= -->
+    <div class="section-card fade-up-2">
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                <span class="material-symbols-outlined text-primary text-sm">settings_suggest</span>
+            </div>
+            <div>
+                <h2 class="text-lg font-bold">Configure & Run AutoML</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Set your training parameters below</p>
+            </div>
+        </div>
+
+        <!-- Two-column: form left + info sidebar right -->
+        <div class="flex gap-6 items-start">
+
+            <!-- Form card -->
+            <div class="flex-1 min-w-0 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-lg p-6">
+                <form action="/run_automl" method="POST" class="space-y-6">
+
+                    <!-- Target column -->
+                    <div>
+                        <label class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2 block">Target Column</label>
+                        <select name="target" class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm">
+                            {% for col in columns %}
+                            <option value="{{col}}">{{col}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Prediction type -->
+                    <div class="border-t border-slate-200 dark:border-slate-700 pt-5">
+                        <label class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3 block">Prediction Type</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-primary transition-all">
+                                <input type="radio" name="prediction_type" value="normal" checked
+                                       onchange="toggleTimeSeriesOptions()"
+                                       class="w-4 h-4 text-primary mt-0.5">
+                                <div>
+                                    <p class="text-sm font-semibold">Normal</p>
+                                    <p class="text-xs text-slate-400">Classification or Regression</p>
+                                </div>
+                            </label>
+                            <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-primary transition-all">
+                                <input type="radio" name="prediction_type" value="timeseries"
+                                       onchange="toggleTimeSeriesOptions()"
+                                       class="w-4 h-4 text-primary mt-0.5">
+                                <div>
+                                    <p class="text-sm font-semibold">Time Series</p>
+                                    <p class="text-xs text-slate-400">Future forecasting</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Time series options -->
+                    <div id="timeseriesOptions" class="hidden p-4 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-semibold text-slate-500 mb-1 block">Date Column</label>
+                                <select name="date_column" class="w-full p-2.5 rounded-xl border dark:border-slate-600 dark:bg-slate-900 text-sm">
+                                    <option value="">Auto-detect</option>
+                                    {% for col in columns %}
+                                    <option value="{{col}}">{{col}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs font-semibold text-slate-500 mb-1 block">Forecast Days</label>
+                                <input type="number" name="forecast_periods" value="30" min="1" max="365"
+                                       class="w-full p-2.5 rounded-xl border dark:border-slate-600 dark:bg-slate-900 text-sm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Normal parameters grid -->
+                    <div id="normalParameters" class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1 block">Train/Test Split</label>
+                            <select name="train_size" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm">
+                                <option value="0.7">70% / 30%</option>
+                                <option value="0.75">75% / 25%</option>
+                                <option value="0.8" selected>80% / 20%</option>
+                                <option value="0.85">85% / 15%</option>
+                                <option value="0.9">90% / 10%</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1 block">Hyperparameter Tuning</label>
+                            <select name="tune_model" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm">
+                                <option value="false" selected>No Tuning (Faster)</option>
+                                <option value="true">Tune Best Model</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1 block">Normalize Features</label>
+                            <select name="normalize" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm">
+                                <option value="false" selected>No Normalization</option>
+                                <option value="true">Normalize Data</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1 block">Feature Selection</label>
+                            <select name="feature_selection" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm">
+                                <option value="false" selected>Use All Features</option>
+                                <option value="true">Auto-Select Features</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1 block">Remove Outliers</label>
+                            <select name="remove_outliers" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-sm">
+                                <option value="false" selected>Keep All Data</option>
+                                <option value="true">Remove Outliers</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Submit -->
+                    <button type="submit" onclick="startLoading()"
+                        class="w-full bg-primary text-white py-3 rounded-xl font-bold shadow-lg shadow-primary/25 hover:bg-primary/90 transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-sm">rocket_launch</span>
+                        Run Prediction Engine
+                    </button>
+
+                    <!-- Loading bar -->
+                    <div id="loadingSection" class="hidden">
+                        <div class="flex justify-between text-xs text-slate-400 mb-2">
+                            <span id="statusText">Initializing...</span>
+                            <span id="progressPercent">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
+                            <div id="progressBar" class="h-2 rounded-full bg-primary transition-all duration-700" style="width:0%"></div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- Right info sidebar -->
+            <div class="w-56 shrink-0 flex flex-col gap-4">
+                <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm">
+                    <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
+                        <span class="material-symbols-outlined text-primary" style="font-size:16px;">model_training</span>
+                    </div>
+                    <p class="text-sm font-bold mb-1">Auto Compare</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Trains and ranks multiple models automatically to find the best one.</p>
+                </div>
+                <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm">
+                    <div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center mb-3">
+                        <span class="material-symbols-outlined text-green-500" style="font-size:16px;">download</span>
+                    </div>
+                    <p class="text-sm font-bold mb-1">Export Model</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Download the trained model as a .pkl file for deployment.</p>
+                </div>
+                <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm">
+                    <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center mb-3">
+                        <span class="material-symbols-outlined text-amber-500" style="font-size:16px;">trending_up</span>
+                    </div>
+                    <p class="text-sm font-bold mb-1">Time Series</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Forecast future values using Prophet time series modeling.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ================= MODEL COMPARISON ================= -->
+    {% if tables and problem_type != 'Time Series' %}
+    <div class="section-card">
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                <span class="material-symbols-outlined text-primary text-sm">analytics</span>
+            </div>
+            <h2 class="text-lg font-bold">Model Comparison</h2>
+        </div>
+
+        <div class="flex gap-6 items-start">
+            <!-- Table -->
+            <div class="flex-1 min-w-0 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-lg overflow-hidden">
+                <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                    <p class="text-xs text-slate-500">Click model name to view documentation</p>
+                    {% if model_filename %}
+                    <a href="/download-model/{{ model_filename }}"
+                       class="inline-flex items-center gap-1.5 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all">
+                        <span class="material-symbols-outlined" style="font-size:14px;">download</span>
+                        Download .pkl
+                    </a>
+                    {% endif %}
+                </div>
+                <div class="overflow-x-auto p-2">
+                    {{ tables|safe }}
+                </div>
+            </div>
+
+            <!-- Best model sidebar -->
+            {% if model %}
+            <div class="w-56 shrink-0">
+                <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="material-symbols-outlined text-amber-500" style="font-size:18px;">military_tech</span>
+                        <p class="text-sm font-bold">Best Model</p>
+                    </div>
+                    {% if best_score %}
+                    <div class="text-center py-3 mb-3 bg-primary/5 rounded-xl border border-primary/20">
+                        <p class="text-3xl font-black text-primary">{{ best_score }}</p>
+                        <p class="text-xs text-slate-400 mt-1">{{ 'Accuracy' if problem_type == 'Classification' else 'R² Score' }}</p>
+                    </div>
+                    {% endif %}
+                    <div class="bg-slate-50 dark:bg-slate-800 p-3 rounded-xl text-xs font-mono leading-relaxed overflow-x-auto text-slate-600 dark:text-slate-300">
+                        {{ model|safe }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- ================= PERFORMANCE CHARTS ================= -->
+
+
+    <!-- ================= VISUALIZATION PLOTS ================= -->
+{% if confusion_matrix_plot or actual_vs_pred_plot or distribution_plot %}
+<div class="section-card">
+    <div class="flex items-center gap-3 mb-4">
+        <div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center">
+            <span class="material-symbols-outlined text-green-500 text-sm">scatter_plot</span>
+        </div>
+        <h2 class="text-lg font-bold">Model Performance Visualization</h2>
+    </div>
+
+    <div class="grid grid-cols-2 gap-6">
+
+        {% if metrics_data %}
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Model Accuracy Comparison</p>
+            <canvas id="modelChart2"></canvas>
+        </div>
+        {% endif %}
+
+        {% if feature_importance %}
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Feature Importance</p>
+            <canvas id="featureChart2"></canvas>
+        </div>
+        {% endif %}
+
+        {% if confusion_matrix_plot %}
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Confusion Matrix</p>
+            <img src="{{ url_for('static', filename='plots/' + confusion_matrix_plot) }}"
+                 alt="Confusion Matrix" class="w-full rounded-xl">
+        </div>
+        {% endif %}
+
+        {% if actual_vs_pred_plot %}
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Actual vs Predicted</p>
+            <img src="{{ url_for('static', filename='plots/' + actual_vs_pred_plot) }}"
+                 alt="Actual vs Predicted" class="w-full rounded-xl">
+        </div>
+        {% endif %}
+
+        {% if distribution_plot %}
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">
+                {% if problem_type == 'Classification' %}Class Distribution{% else %}Residual Distribution{% endif %}
+            </p>
+            <img src="{{ url_for('static', filename='plots/' + distribution_plot) }}"
+                 alt="Distribution Plot" class="w-full rounded-xl">
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endif %}
+
+    <!-- ================= TIME SERIES ================= -->
+    {% if problem_type == 'Time Series' %}
+    <div class="section-card">
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                <span class="material-symbols-outlined text-amber-500 text-sm">trending_up</span>
+            </div>
+            <h2 class="text-lg font-bold">Time Series Forecast Results</h2>
+        </div>
+
+        <div class="flex gap-6 items-start">
+
+            <!-- Forecast plot -->
+            {% if model_filename %}
+            <div class="flex-1 min-w-0 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Forecast Visualization</p>
+                <img src="{{ url_for('static', filename='plots/' + model_filename) }}"
+                     alt="Forecast Plot" class="w-full rounded-xl">
+            </div>
+            {% endif %}
+
+            <!-- Forecast table -->
+            {% if tables %}
+            <div class="w-72 shrink-0 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Predicted Values</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mb-3 leading-relaxed">
+                    <span class="text-primary font-semibold">yhat</span> = Forecast ·
+                    <span class="text-green-500 font-semibold">Lower</span> = Min ·
+                    <span class="text-amber-500 font-semibold">Upper</span> = Max
+                </p>
+                <div class="overflow-x-auto max-h-96 overflow-y-auto">
+                    {{ tables|safe }}
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- ================= FLOATING CHAT BUTTON ================= -->
+<button id="chatToggle"
+class="fixed bottom-8 right-8 bg-primary text-white w-16 h-16 rounded-full shadow-xl shadow-primary/40 flex items-center justify-center hover:scale-105 transition-all z-50">
+    <span class="material-symbols-outlined text-3xl">chat</span>
+</button>
+
+<!-- ================= CHAT SIDEBAR ================= -->
+<div id="chatSidebar"
+class="fixed top-0 right-0 h-full w-96 bg-white dark:bg-slate-900 border-l border-slate-300 dark:border-slate-700 shadow-2xl transform translate-x-full transition-transform duration-300 z-40 flex flex-col">
+    <div class="flex items-center justify-between bg-primary text-white px-6 py-4">
+        <div>
+            <h3 class="font-bold text-lg">DataPulse AI</h3>
+            <p class="text-xs opacity-80">Ask about your dataset</p>
+        </div>
+        <button id="chatClose" class="text-2xl">&times;</button>
+    </div>
+    <div id="chatBox"
+    class="flex-1 p-6 overflow-y-auto space-y-4 text-sm bg-background-light dark:bg-background-dark">
+    </div>
+    <div class="p-4 border-t border-slate-300 dark:border-slate-700 flex gap-3 bg-white dark:bg-slate-900">
+        <input type="text" id="userInput" placeholder="Ask about your data..."
+        class="flex-1 p-3 rounded-xl border dark:bg-slate-800 focus:ring-2 focus:ring-primary outline-none">
+        <button onclick="sendMessage()"
+        class="bg-primary text-white px-5 rounded-xl font-semibold hover:bg-primary/90 transition-all">
+            Send
+        </button>
+    </div>
+</div>
+
+<script>
+
+/* ================= TOGGLE TIME SERIES ================= */
+function toggleTimeSeriesOptions() {
+    const timeseriesRadio = document.querySelector('input[name="prediction_type"][value="timeseries"]');
+    const timeseriesOptions = document.getElementById('timeseriesOptions');
+    const normalParameters = document.getElementById('normalParameters');
+
+    if (timeseriesRadio.checked) {
+        timeseriesOptions.classList.remove('hidden');
+        normalParameters.classList.add('hidden');
+    } else {
+        timeseriesOptions.classList.add('hidden');
+        normalParameters.classList.remove('hidden');
+    }
+}
+
+/* ================= LOADING BAR ================= */
+const steps = [
+    { progress: 10, status: "Loading dataset...",        delay: 800  },
+    { progress: 25, status: "Applying parameters...",    delay: 2500 },
+    { progress: 45, status: "Preprocessing features...", delay: 3000 },
+    { progress: 60, status: "Comparing models...",       delay: 4000 },
+    { progress: 75, status: "Evaluating metrics...",     delay: 5000 },
+    { progress: 88, status: "Tuning hyperparameters...", delay: 3000 },
+    { progress: 95, status: "Generating plots...",       delay: 2000 },
+];
+
+function startLoading() {
+    event.preventDefault();
+    document.getElementById("loadingSection").classList.remove("hidden");
+
+    let elapsed = 0;
+    steps.forEach(step => {
+        elapsed += step.delay;
+        setTimeout(() => {
+            document.getElementById("progressBar").style.width   = step.progress + "%";
+            document.getElementById("progressPercent").innerText = step.progress + "%";
+            document.getElementById("statusText").innerText      = step.status;
+        }, elapsed);
+    });
+
+    setTimeout(() => { document.querySelector("form").submit(); }, 1000);
+}
+
+/* ================= CHAT LOGIC ================= */
+const chatToggle = document.getElementById("chatToggle");
+const chatSidebar = document.getElementById("chatSidebar");
+const chatClose = document.getElementById("chatClose");
+const chatBox = document.getElementById("chatBox");
+const userInput = document.getElementById("userInput");
+const sessionId = 'session_' + Date.now();
+
+const mainContent = document.getElementById("mainContent");
+
+chatToggle.addEventListener("click", () => {
+    chatSidebar.classList.remove("translate-x-full");
+    chatToggle.style.right = "25rem";
+    mainContent.classList.remove("mx-auto");
+    mainContent.classList.add("ml-0");
+});
+
+chatClose.addEventListener("click", () => {
+    chatSidebar.classList.add("translate-x-full");
+    chatToggle.style.right = "2rem";
+    mainContent.classList.remove("ml-0");
+    mainContent.classList.add("mx-auto");
+});
+async function sendMessage() {
+    const message = userInput.value.trim();
+    if (!message) return;
+
+    chatBox.innerHTML += `
+        <div class="bg-primary/10 text-primary p-3 rounded-xl">
+            <b>You:</b> ${message}
+        </div>`;
+    chatBox.scrollTop = chatBox.scrollHeight;
+    userInput.value = "";
+
+    const aiMessageDiv = document.createElement('div');
+    aiMessageDiv.className = 'bg-slate-200 dark:bg-slate-800 p-3 rounded-xl';
+    aiMessageDiv.innerHTML = '<b>AI:</b> <span class="ai-text">Thinking...</span>';
+    chatBox.appendChild(aiMessageDiv);
+
+    const aiTextSpan = aiMessageDiv.querySelector('.ai-text');
+
+    try {
+        const response = await fetch("/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ question: message })
+        });
+
+        const data = await response.json();
+
+        if (!data.answer || data.answer.trim() === '') {
+            aiTextSpan.innerHTML = 'I received an empty response. Please try again!';
+            return;
+        }
+
+        const fullText = data.answer;
+        aiTextSpan.innerHTML = '';
+        let currentText = '';
+        for (let i = 0; i < fullText.length; i++) {
+            currentText += fullText[i];
+            aiTextSpan.innerHTML = formatMessage(currentText);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            await new Promise(resolve => setTimeout(resolve, 20));
+        }
+
+    } catch (err) {
+        console.error("Chat error:", err);
+        aiTextSpan.innerHTML = 'Sorry, I encountered an error. Please try again!';
+    }
+}
+
+function formatMessage(text) {
+    if (!text) return '';
+    text = text.replace(/\n/g, '<br>');
+    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    return text;
+}
+
+userInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") sendMessage();
+});
+
+/* ================= CHARTS ================= */
+{% if metrics_data %}
+const modelData = {{ metrics_data | tojson }};
+const modelNames = modelData.map(m => m.Model.replace(/<[^>]*>/g, ''));
+const modelScores = modelData.map(m => m.Accuracy !== undefined ? m.Accuracy : m.R2);
+
+new Chart(document.getElementById("modelChart2"), {
+    type: "bar",
+    data: {
+        labels: modelNames,
+        datasets: [{
+            label: "Score",
+            data: modelScores,
+            backgroundColor: 'rgba(60,131,246,0.7)',
+            borderColor: 'rgba(60,131,246,1)',
+            borderWidth: 2,
+            borderRadius: 6,
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+            y: { beginAtZero: true, max: 1 },
+            x: { ticks: { font: { size: 10 } } }
+        }
+    }
+});
+{% endif %}
+
+{% if feature_importance %}
+const featureData = {{ feature_importance | tojson }};
+const featureNames = Object.keys(featureData);
+const featureValues = Object.values(featureData).map(v => parseFloat(v.toFixed(4)));
+
+// Normalize feature importance values to 0-100% for display
+const maxVal = Math.max(...featureValues);
+const normalizedValues = featureValues.map(v => maxVal > 0 ? (v / maxVal) * 100 : 0);
+
+new Chart(document.getElementById("featureChart2"), {
+    type: "bar",
+    data: {
+        labels: featureNames,
+        datasets: [{
+            label: "Importance",
+            data: normalizedValues,
+            backgroundColor: featureNames.map((_, i) => 
+                `hsla(${260 + i * 15}, 70%, 60%, 0.8)`
+            ),
+            borderColor: featureNames.map((_, i) => 
+                `hsla(${260 + i * 15}, 70%, 60%, 1)`
+            ),
+            borderWidth: 2,
+            borderRadius: 6,
+        }]
+    },
+    options: {
+        indexAxis: "y",
+        responsive: true,
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                callbacks: {
+                    label: ctx => {
+                        const original = featureValues[ctx.dataIndex];
+                        return ` ${ctx.raw.toFixed(1)}% (score: ${original.toFixed(4)})`;
+                    }
+                }
+            }
+        },
+        scales: {
+            x: {
+                beginAtZero: true,
+                max: 100,
+                ticks: {
+                    callback: val => val.toFixed(0) + '%'
+                },
+                grid: { color: 'rgba(255,255,255,0.05)' }
+            },
+            y: {
+                ticks: { 
+                    font: { size: 11 },
+                    color: '#94a3b8'
+                }
+            }
+        }
+    }
+});
+
+
+{% endif %}
+</script>
+
+
+<footer class="bg-slate-100 dark:bg-slate-900 border-t border-slate-300 dark:border-slate-700 py-6">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-sm">
+
+        <p class="text-slate-600 dark:text-slate-400 mb-4 md:mb-0">
+            © 2026 DataPulse Auto EDA. All rights reserved.
+        </p>
+
+        <div class="flex items-center gap-6">
+            <a href="https://www.linkedin.com/feed/" target="_blank"
+               class="text-slate-600 dark:text-slate-400 hover:text-primary transition">
+                LinkedIn
+            </a>
+
+            <a href="https://github.com/Aryan83699" target="_blank"
+               class="text-slate-600 dark:text-slate-400 hover:text-primary transition">
+                GitHub
+            </a>
+
+            <a href="https://www.kaggle.com/datawitharyan" target="_blank"
+               class="text-slate-600 dark:text-slate-400 hover:text-primary transition">
+                Kaggle
+            </a>
+        </div>
+    </div>
+</footer>
+
+
+
+</body>
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Verify Identity - DataPulse</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#3c83f6",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#101722",
+                    },
+                    fontFamily: { display: ["Inter", "sans-serif"] }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+<style>
+body { font-family: 'Inter', sans-serif; }
+.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+/* Dot grid background */
+.dot-bg {
+    background-image: radial-gradient(circle, rgba(60,131,246,0.12) 1px, transparent 1px);
+    background-size: 28px 28px;
+}
+
+/* Glowing orbs */
+.orb-1 {
+    position: fixed;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(60,131,246,0.12), transparent 70%);
+    top: -150px; left: -150px;
+    pointer-events: none;
+    animation: orb-move 8s ease-in-out infinite alternate;
+}
+.orb-2 {
+    position: fixed;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(139,92,246,0.1), transparent 70%);
+    bottom: -100px; right: -100px;
+    pointer-events: none;
+    animation: orb-move 10s ease-in-out infinite alternate-reverse;
+}
+@keyframes orb-move {
+    from { transform: translate(0, 0); }
+    to   { transform: translate(40px, 40px); }
+}
+
+@keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeSlideUp 0.6s ease forwards; }
+
+@keyframes pulse-ring {
+    0%   { box-shadow: 0 0 0 0 rgba(60,131,246,0.35); }
+    70%  { box-shadow: 0 0 0 16px rgba(60,131,246,0); }
+    100% { box-shadow: 0 0 0 0 rgba(60,131,246,0); }
+}
+.pulse-icon { animation: pulse-ring 2.5s infinite; }
+
+/* OTP input boxes */
+.otp-input {
+    width: 52px;
+    height: 60px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    font-family: 'Inter', monospace;
+    border-radius: 14px;
+    border: 2px solid;
+    outline: none;
+    transition: all 0.2s ease;
+    background: rgba(255,255,255,0.04);
+    border-color: #334155;
+    color: white;
+    caret-color: #3c83f6;
+}
+.otp-input:focus {
+    border-color: #3c83f6;
+    background: rgba(60,131,246,0.08);
+    box-shadow: 0 0 0 4px rgba(60,131,246,0.15);
+    transform: translateY(-2px);
+}
+.otp-input.filled {
+    border-color: #3c83f6;
+    background: rgba(60,131,246,0.1);
+}
+
+/* Shimmer button */
+@keyframes shimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position: 200% center; }
+}
+.btn-shimmer {
+    background: linear-gradient(90deg, #3c83f6 0%, #60a5fa 40%, #3c83f6 60%, #2563eb 100%);
+    background-size: 200% auto;
+    animation: shimmer 3s linear infinite;
+}
+
+/* Progress dots */
+.step-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+@keyframes bounce-in {
+    0%   { transform: scale(0.3); opacity: 0; }
+    50%  { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+}
+.bounce-in { animation: bounce-in 0.4s ease forwards; }
+
+/* Timer ring */
+@keyframes timer-shrink {
+    from { stroke-dashoffset: 0; }
+    to   { stroke-dashoffset: 157; }
+}
+.timer-ring {
+    animation: timer-shrink 60s linear forwards;
+    transform-origin: center;
+    transform: rotate(-90deg);
+}
+</style>
+</head>
+
+<body class="bg-background-dark text-white min-h-screen flex flex-col font-display dot-bg">
+
+<!-- Orbs -->
+<div class="orb-1"></div>
+<div class="orb-2"></div>
+
+<!-- Main content -->
+<div class="flex-1 flex items-center justify-center p-6">
+    <div class="w-full max-w-md fade-up">
+
+        <!-- Top logo -->
+        <div class="flex items-center justify-center gap-3 mb-8">
+            <div class="bg-primary p-2 rounded-xl shadow-lg shadow-primary/30">
+                <span class="material-symbols-outlined text-white">analytics</span>
+            </div>
+            <div>
+                <h1 class="text-xl font-black">DataPulse</h1>
+                <p class="text-xs text-slate-500 uppercase tracking-widest">Auto EDA Platform</p>
+            </div>
+        </div>
+
+        <!-- Progress steps -->
+        <div class="flex items-center justify-center gap-2 mb-8">
+            <div class="step-dot bg-primary"></div>
+            <div class="h-px w-8 bg-primary"></div>
+            <div class="step-dot bg-primary"></div>
+            <div class="h-px w-8 bg-primary"></div>
+            <div class="step-dot bg-primary border-2 border-primary" style="background:transparent; width:12px; height:12px; box-shadow: 0 0 0 4px rgba(60,131,246,0.2);"></div>
+        </div>
+
+        <!-- Card -->
+        <div class="bg-slate-900 rounded-3xl border border-slate-800 shadow-2xl overflow-hidden">
+
+            <!-- Top accent bar -->
+            <div class="h-1 w-full bg-gradient-to-r from-primary via-purple-500 to-primary"></div>
+
+            <div class="p-8">
+
+                <!-- Icon + heading -->
+                <div class="text-center mb-8">
+                    <div class="relative inline-block mb-5">
+                        <!-- Timer ring SVG -->
+                        <svg width="80" height="80" viewBox="0 0 80 80" class="absolute -inset-2">
+                            <circle cx="40" cy="40" r="25" fill="none" stroke="#1e293b" stroke-width="3"/>
+                            <circle cx="40" cy="40" r="25" fill="none" stroke="#3c83f6" stroke-width="3"
+                                stroke-dasharray="157" stroke-dashoffset="0"
+                                class="timer-ring" stroke-linecap="round"/>
+                        </svg>
+                        <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center pulse-icon relative z-10">
+                            <span class="material-symbols-outlined text-primary" style="font-size:32px;">mark_email_read</span>
+                        </div>
+                    </div>
+                    <h2 class="text-2xl font-extrabold mb-2">Check your inbox</h2>
+                    <p class="text-slate-400 text-sm leading-relaxed max-w-xs mx-auto">
+                        We sent a <span class="text-primary font-semibold">6-digit code</span> to your email. Enter it below to verify your identity.
+                    </p>
+                </div>
+
+                <!-- OTP boxes form -->
+                <form action="{{ '/reset-verify' if mode == 'reset' else '/verify-login-otp' if mode == 'login' else '/verify-otp' }}" method="POST" id="otpForm">
+                    <input type="hidden" name="otp" id="otpHidden">
+
+                    <!-- 6 individual boxes -->
+                    <div class="flex justify-center gap-3 mb-6" id="otpBoxes">
+                        <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]">
+                        <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]">
+                        <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]">
+                        <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]">
+                        <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]">
+                        <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]">
+                    </div>
+
+                    <!-- Timer text -->
+                    <p class="text-center text-xs text-slate-500 mb-6">
+                        Code expires in <span id="timerText" class="text-primary font-semibold">60s</span>
+                    </p>
+
+                    <button type="submit" id="verifyBtn"
+                        class="w-full btn-shimmer text-white py-4 rounded-2xl font-bold shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group">
+                        <span class="material-symbols-outlined" style="font-size:18px;">verified_user</span>
+                        Verify & Continue
+                        <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" style="font-size:16px;">arrow_forward</span>
+                    </button>
+
+                </form>
+
+                <!-- Also support the login OTP route -->
+                <form action="{% if mode == 'reset' %}/reset-verify{% elif mode == 'login' %}/verify-login-otp{% else %}/verify-otp{% endif %}" method="POST" id="otpForm">
+                    <input type="hidden" name="otp" id="otpHiddenLogin">
+                </form>
+
+                <!-- Divider -->
+                <div class="flex items-center gap-3 my-6">
+                    <div class="flex-1 h-px bg-slate-800"></div>
+                    <p class="text-xs text-slate-600">or</p>
+                    <div class="flex-1 h-px bg-slate-800"></div>
+                </div>
+
+                <!-- Resend + back -->
+                <div class="flex items-center justify-between">
+                    <a href="/" class="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-primary transition-all">
+                        <span class="material-symbols-outlined" style="font-size:14px;">arrow_back</span>
+                        Back to login
+                    </a>
+                    <button type="button" id="resendBtn" onclick="resendOTP()"
+                        class="text-xs text-slate-400 hover:text-primary transition-all font-semibold flex items-center gap-1 disabled:opacity-40"
+                        disabled>
+                        <span class="material-symbols-outlined" style="font-size:14px;">refresh</span>
+                        Resend code
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Helper text -->
+        <p class="text-center text-xs text-slate-600 mt-6">
+            Check spam folder if you don't see the email · Code valid for 60 seconds
+        </p>
+
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-slate-900 border-t border-slate-800 py-5 mt-auto">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-sm gap-3">
+        <div class="flex items-center gap-2">
+            <div class="bg-primary p-1.5 rounded-lg">
+                <span class="material-symbols-outlined text-white" style="font-size:14px;">analytics</span>
+            </div>
+            <p class="text-slate-500">© 2026 DataPulse Auto EDA. All rights reserved.</p>
+        </div>
+        <div class="flex items-center gap-6">
+            <a href="https://www.linkedin.com/feed/" target="_blank" class="text-slate-500 hover:text-primary transition text-sm">LinkedIn</a>
+            <a href="https://github.com/Aryan83699" target="_blank" class="text-slate-500 hover:text-primary transition text-sm">GitHub</a>
+            <a href="https://www.kaggle.com/datawitharyan" target="_blank" class="text-slate-500 hover:text-primary transition text-sm">Kaggle</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+/* ================= OTP BOXES LOGIC ================= */
+const boxes = document.querySelectorAll(".otp-input");
+
+boxes.forEach((box, i) => {
+    box.addEventListener("input", (e) => {
+        const val = e.target.value.replace(/[^0-9]/g, "");
+        box.value = val;
+
+        if (val) {
+            box.classList.add("filled");
+            if (i < boxes.length - 1) boxes[i + 1].focus();
+        } else {
+            box.classList.remove("filled");
+        }
+        checkComplete();
+    });
+
+    box.addEventListener("keydown", (e) => {
+        if (e.key === "Backspace" && !box.value && i > 0) {
+            boxes[i - 1].focus();
+            boxes[i - 1].value = "";
+            boxes[i - 1].classList.remove("filled");
+        }
+    });
+
+    // Allow paste
+    box.addEventListener("paste", (e) => {
+        e.preventDefault();
+        const pasted = e.clipboardData.getData("text").replace(/[^0-9]/g, "").slice(0, 6);
+        pasted.split("").forEach((char, idx) => {
+            if (boxes[idx]) {
+                boxes[idx].value = char;
+                boxes[idx].classList.add("filled");
+            }
+        });
+        if (boxes[Math.min(pasted.length, 5)]) boxes[Math.min(pasted.length, 5)].focus();
+        checkComplete();
+    });
+});
+
+function getOTPValue() {
+    return Array.from(boxes).map(b => b.value).join("");
+}
+
+function checkComplete() {
+    const val = getOTPValue();
+    const btn = document.getElementById("verifyBtn");
+    if (val.length === 6) {
+        btn.classList.add("bounce-in");
+    }
+}
+
+// On submit — fill hidden input
+document.getElementById("otpForm").addEventListener("submit", (e) => {
+    const otp = getOTPValue();
+    document.getElementById("otpHidden").value = otp;
+    // Also fill login OTP hidden if it exists
+    const loginHidden = document.getElementById("otpHiddenLogin");
+    if (loginHidden) loginHidden.value = otp;
+});
+
+// Focus first box on load
+window.addEventListener("DOMContentLoaded", () => {
+    boxes[0].focus();
+});
+
+/* ================= COUNTDOWN TIMER ================= */
+let timeLeft = 60;
+const timerText  = document.getElementById("timerText");
+const resendBtn  = document.getElementById("resendBtn");
+
+const countdown = setInterval(() => {
+    timeLeft--;
+    timerText.textContent = timeLeft + "s";
+
+    if (timeLeft <= 10) timerText.classList.add("text-red-400");
+
+    if (timeLeft <= 0) {
+        clearInterval(countdown);
+        timerText.textContent = "Expired";
+        timerText.classList.add("text-red-400");
+        resendBtn.disabled = false;
+        resendBtn.classList.remove("disabled:opacity-40");
+    }
+}, 1000);
+
+function resendOTP() {
+    // Just redirect back to trigger a new OTP send
+    window.location.href = "/";
+}
+</script>
+
+</body>
+</html>
