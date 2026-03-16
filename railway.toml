@@ -1,0 +1,7 @@
+[services.eda]
+rootDirectory = "eda_service"
+startCommand = "python app.py"
+
+[services.ai]
+rootDirectory = "ai_service"
+startCommand = "python app2.py"
