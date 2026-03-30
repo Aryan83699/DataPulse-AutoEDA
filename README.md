@@ -1,5 +1,5 @@
-<h1 align="center">🚀 DataPulse</h1>
-<h3 align="center">AI-Powered Data Insight & Decision Engine</h3>
+<h1 align="left">🚀 DataPulse</h1>
+<h3 align="left">AI-Powered Data Insight & Decision Engine</h3>
 
 <p align="center">
   Transform raw data into insights, predictions, and decisions — without coding.
@@ -52,12 +52,12 @@ manual effort, coding, or dependency on data teams.
 
 <h2>🛠️ Tech Stack</h2>
 
-<p><b>Frontend:</b> HTML, CSS, React (optional)</p>
-<p><b>Backend:</b> Python (Flask / FastAPI)</p>
+<p><b>Frontend:</b> HTML, CSS, Javascript</p>
+<p><b>Backend:</b> Python (Flask , Langchain)</p>
 <p><b>Data Processing:</b> Pandas, NumPy</p>
 <p><b>Machine Learning:</b> Scikit-learn</p>
-<p><b>Visualization:</b> Plotly / Matplotlib</p>
-<p><b>Database:</b> PostgreSQL / MongoDB</p>
+<p><b>Visualization:</b> Plotly , Matplotlib</p>
+<p><b>Database:</b> PostgreSQL</p>
 
 <hr>
 
